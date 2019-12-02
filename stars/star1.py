@@ -13,7 +13,7 @@ def sanitize_input(value):
 
 def run():
     input_lines = map_over_input(
-        get_required_fuel, "stars/star1.input", sanitize=sanitize_input
+        get_required_fuel, "input/star1.input", sanitize=sanitize_input
     )
     total_fuel = sum(input_lines)
     return f"The total fuel required is: {total_fuel}"
