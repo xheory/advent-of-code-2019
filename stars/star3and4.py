@@ -40,7 +40,7 @@ def run_star3():
     ic.memory[1] = 12
     ic.memory[2] = 2
     ic.run()
-    print(f"[Intcode Computer] Value at position 0: {ic.memory[0]}")
+    return f"[Intcode Computer] Value at position 0: {ic.memory[0]}"
 
 
 def run_star4():
@@ -50,4 +50,4 @@ def run_star4():
     ic.memory[1] = 76
     ic.memory[2] = 3
     ic.run()
-    print(f"[Intcode Computer] Value at position 0: {ic.memory[0]}")
+    return f"[Intcode Computer] Value at position 0: {ic.memory[0]}"

@@ -19,4 +19,4 @@ def run():
         get_required_fuel_fuel, "input/star1.input", sanitize=sanitize_input
     )
     total_fuel = sum(hindsight_fuels)
-    print(f"In hindsight, the total fuel required is: {total_fuel}")
+    return f"In hindsight, the total fuel required is: {total_fuel}"
