@@ -20,7 +20,3 @@ def run():
     )
     total_fuel = sum(hindsight_fuels)
     print(f"In hindsight, the total fuel required is: {total_fuel}")
-
-
-if __name__ == "__main__":
-    get_required_fuel_fuel(654)
