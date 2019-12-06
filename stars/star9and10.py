@@ -20,20 +20,13 @@ class IntcodeComputer(object):
         parameter_modes = tuple(digits[-3:-6:-1])
         return opcode, tuple(parameter_modes)
 
-    def parse_parameter(self, position_offset, parameter_mode, debug=False):
+    def parse_parameter(self, position_offset, parameter_mode):
         memory_position = self.memory_position + position_offset
-        if debug:
-            print(
-                f"Parsing param with mode {parameter_mode} with position {memory_position}",
-                end=": ",
-            )
         if parameter_mode == 0:
             value_index = self.memory[memory_position]
             value = self.memory[value_index]
         elif parameter_mode == 1:
             value = self.memory[memory_position]
-        if debug:
-            print(value)
         return value
 
     def add(self, parameter_modes):
