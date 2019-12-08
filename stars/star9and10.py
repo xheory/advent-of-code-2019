@@ -3,16 +3,17 @@ class IntcodeComputer(object):
     def parse_program(program):
         return [int(number) for number in program.split(",")]
 
-    def reset(self, program=None, program_input=None):
+    def reset(self, program=None):
         self.program = [] if program is None else self.parse_program(program)
-        self.program_input = program_input
+        self.program_input = []
+        self.current_input_index = 0
         self.program_output = None
         self.memory = self.program
         self.memory_position = 0
         self.running = False
 
-    def __init__(self):
-        self.reset()
+    def __init__(self, input_program=None):
+        self.reset(input_program)
 
     def parse_instruction_head(self, number):
         digits = [int(digit) for digit in f"{number:05}"]
@@ -47,9 +48,13 @@ class IntcodeComputer(object):
         self.running = False
         return 0
 
+    def input(self, program_input):
+        self.program_input.append(program_input)
+
     def save_program_input(self, parameter_modes):
         memory_index = self.memory[self.memory_position + 1]
-        self.memory[memory_index] = self.program_input
+        self.memory[memory_index] = self.program_input[self.current_input_index]
+        self.current_input_index += 1
         return self.memory_position + 2
 
     def set_program_output(self, parameter_modes):
@@ -109,8 +114,10 @@ class IntcodeComputer(object):
         elif opcode == 99:
             return self.terminate, 0, None
 
-    def run_program(self, program, program_input):
-        self.reset(program, program_input)
+    def load_program(self, program):
+        self.reset(program)
+
+    def run(self):
         self.running = True
         while self.running:
             method, parameter_count, parameter_modes = self.parse_instruction()
@@ -128,7 +135,9 @@ def run_star9():
     with open("input/star9.input", "r") as input_file:
         program = input_file.read().strip()
         program_input = 1
-        program_output = intcode_computer.run_program(program, program_input)
+        intcode_computer.load_program(program)
+        intcode_computer.input(program_input)
+        program_output = intcode_computer.run()
     return f"[Intcode Computer] Output: {program_output}"
 
 
@@ -136,5 +145,12 @@ def run_star10():
     with open("input/star9.input", "r") as input_file:
         program = input_file.read().strip()
         program_input = 5
-        program_output = intcode_computer.run_program(program, program_input)
+        intcode_computer.load_program(program)
+        intcode_computer.input(program_input)
+        program_output = intcode_computer.run()
     return f"[Intcode Computer] Output: {program_output}"
+
+
+# When the commputer wants to receive input, halt until input is received then continue using the input gotten.
+# If you rewrite the array-method into something that just halts, then continues when input has been gotten,
+# the problem of daisy-chaining as in part 2 day 7 should solve itself.
