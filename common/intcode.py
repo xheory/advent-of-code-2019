@@ -54,15 +54,21 @@ class IntcodeComputer(object):
                 int(number.strip()) for number in program_code.split(",")
             ] + ([0] * 30000)
 
-    def get_parameters(self, *values):
+    def get_parameters(self, *values, literals=[]):
         parameters = []
-        for value, mode in zip(values, self._param_modes):
-            if mode == 0:  # position mode
-                parameters.append(self.program[value])
-            elif mode == 1:  # immediate mode
-                parameters.append(value)
-            elif mode == 2:  # relative mode
-                parameters.append(self.program[self.relative_base + value])
+        for index, (value, mode) in enumerate(zip(values, self._param_modes)):
+            if index in literals:
+                if mode == 0 or mode == 1:
+                    parameters.append(value)
+                else:
+                    parameters.append(value + self.relative_base)
+            else:
+                if mode == 0:  # position mode
+                    parameters.append(self.program[value])
+                elif mode == 1:  # immediate mode
+                    parameters.append(value)
+                elif mode == 2:  # relative mode
+                    parameters.append(self.program[value + self.relative_base])
         return tuple(parameters) if len(parameters) > 1 else parameters[0]
 
     def write_value_to_program(self, index, value):
@@ -70,26 +76,26 @@ class IntcodeComputer(object):
 
     # 1
     def add(self, arg1, arg2, position):
-        value1, value2 = self.get_parameters(arg1, arg2)
-        self.write_value_to_program(position, value1 + value2)
+        value1, value2, value3 = self.get_parameters(arg1, arg2, position, literals=[2])
+        self.write_value_to_program(value3, value1 + value2)
 
     # 2
     def multiply(self, arg1, arg2, position):
-        value1, value2 = self.get_parameters(arg1, arg2)
-        self.write_value_to_program(position, value1 * value2)
+        value1, value2, value3 = self.get_parameters(arg1, arg2, position, literals=[2])
+        self.write_value_to_program(value3, value1 * value2)
 
     # 3
     def read(self, position):
         if len(self.input_array) > 0:
             value = self.input_array.pop(0)
-            self.program[position] = value
+            param = self.get_parameters(position, literals=[0])
+            self.program[param] = value
             self._should_halt = False
         else:
             self._should_halt = True
 
     # 4
     def write(self, position):
-        print(f"write called with position({position})")
         output = self.get_parameters(position)
         self.output_array.append(output)
 
@@ -107,19 +113,18 @@ class IntcodeComputer(object):
 
     # 7
     def less_than(self, arg1, arg2, position):
-        value1, value2 = self.get_parameters(arg1, arg2)
-        self.program[position] = 1 if value1 < value2 else 0
+        value1, value2, value3 = self.get_parameters(arg1, arg2, position, literals=[2])
+        self.program[value3] = 1 if value1 < value2 else 0
 
     # 8
     def equals(self, arg1, arg2, position):
-        value1, value2 = self.get_parameters(arg1, arg2)
-        self.program[position] = 1 if value1 == value2 else 0
+        value1, value2, value3 = self.get_parameters(arg1, arg2, position, literals=[2])
+        self.program[value3] = 1 if value1 == value2 else 0
 
     # 9
     def adjust_relative_base(self, arg1):
         adjustment_value = self.get_parameters(arg1)
         self.relative_base += adjustment_value
-        print(f"adjusted relative base (currently: {self.relative_base}) with {arg1}")
 
     # 99
     def terminate(self):

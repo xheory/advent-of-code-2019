@@ -9,8 +9,12 @@ def run_star17():
     ic.run()
     ic.input_array.append(1)
     ic.run()
-    return f"???: {ic.output_array}"
+    return f"BOOST keycode: {ic.output_array[0]}"
 
 
 def run_star18():
-    return f"???: {'???'}"
+    ic = IntcodeComputer(program_code)
+    ic.run()
+    ic.input_array.append(2)
+    ic.run()
+    return f"Coordinates: {ic.output_array[0]}"
