@@ -1,20 +1,41 @@
-import sys
+class IntcodeMemory(object):
+    def __init__(self, init_data=None):
+        self.data = {}
+        for address, value in enumerate(init_data):
+            self.data[address] = value
+
+    def __repr__(self):
+        return repr(self.data)
+
+    def __setitem__(self, address, value):
+        self.data[address] = value
+
+    def _load_memory_value(self, address):
+        if address not in self.data:
+            self.data[address] = 0
+        return self.data[address]
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return self._load_memory_value(key)
+        elif isinstance(key, slice):
+            indices = key.indices(len(self.data))
+            indice_range = range(*indices)
+            slice_result = [self._load_memory_value(x) for x in indice_range]
+            return slice_result
+
+    def __delitem__(self, index):
+        if index in self.data:
+            del self.data[index]
 
 
-class IntcodeInstruction:
+class IntcodeInstruction(object):
     def __init__(self, method, param_count=0):
         self.method = method
         self.param_count = param_count
 
     def __repr__(self):
         return f"Instruction({self.method.__name__}, param_count={self.param_count})"
-
-
-class IntcodeMemory:
-    def __init__():
-        pass
-
-    # TODO: Extend the dict class to apply to the custom memory rules.
 
 
 class IntcodeComputer(object):
@@ -50,9 +71,8 @@ class IntcodeComputer(object):
         if program_code is not None:
             self.original_code = program_code
         if self.original_code is not None:
-            self.program = [
-                int(number.strip()) for number in program_code.split(",")
-            ] + ([0] * 30000)
+            parsed_code = [int(num.strip()) for num in program_code.split(",")]
+            self.program = IntcodeMemory(parsed_code)
 
     def get_parameters(self, *values, literals=[]):
         parameters = []
