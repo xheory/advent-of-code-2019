@@ -79,26 +79,14 @@ def do_time_step(moons):
 def run_star23():
     moons = load_moons()
 
-    # --- Debug print:
-    print("After 0 steps:")
-    for moon in moons:
-        print(moon)
-    print()
-
     steps = 1000
     for step_index in range(steps):
         do_time_step(moons)
-
-        if (step_index + 1) % 10 == 0:
-            print(f"After {step_index+1} step{'' if step_index == 0 else 's'}:")
-            for moon in moons:
-                print(moon)
-            print()
 
     total_energy = sum(moon.get_total_energy() for moon in moons)
     return f"Total energy: {total_energy}"
 
 
 def run_star24():
-    moons = load_moons()
-    return f"???: {moons}"
+    # moons = load_moons()
+    return f"???: {'n/a'}"

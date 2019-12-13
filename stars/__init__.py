@@ -11,6 +11,7 @@ from stars.star17and18 import run_star17, run_star18
 from stars.star19and20 import run_star19, run_star20
 from stars.star21and22 import run_star21, run_star22
 from stars.star23and24 import run_star23, run_star24
+from stars.star25and26 import run_star25, run_star26
 
 run_functions = [
     # run_star1,
@@ -35,6 +36,8 @@ run_functions = [
     # run_star20,
     # run_star21,
     # run_star22,
-    run_star23,
-    run_star24,
+    # run_star23,
+    # run_star24,
+    run_star25,
+    run_star26,
 ]
